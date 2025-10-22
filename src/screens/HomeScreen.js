@@ -1,28 +1,41 @@
-// HomeScreen.js
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, StyleSheet, Alert } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { View, FlatList, Alert } from 'react-native';
+import { Button, Card, Text } from 'react-native-paper';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import { loadEntries, saveEntries } from '../utils/storage';
-import EntryListItem from '../components/EntryListItem';
 import { theme } from '../../theme';
+import EntryListItem from '../components/EntryListItem';
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen() {
   const [entries, setEntries] = useState([]);
+  const navigation = useNavigation();
 
   useEffect(() => {
     const load = async () => {
       const data = await loadEntries();
-      setEntries(data);
+      setEntries(data || []);
     };
     load();
   }, []);
 
-  const deleteEntry = async (index) => {
+  const addEntry = () => {
+    navigation.navigate('AddEntry');
+  };
+
+  const viewGraph = () => {
+    navigation.navigate('Graph');
+  };
+
+  const editEntry = (index) => {
+    navigation.navigate('AddEntry', { index, entry: entries[index] });
+  };
+
+  const deleteEntry = (index) => {
     Alert.alert('Confirm Delete', 'Delete this entry?', [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Delete',
-        style: 'destructive',
         onPress: async () => {
           const newEntries = entries.filter((_, i) => i !== index);
           setEntries(newEntries);
@@ -32,80 +45,29 @@ export default function HomeScreen({ navigation }) {
     ]);
   };
 
-  const editEntry = (index) => {
-    navigation.navigate('AddEntry', { entry: entries[index], index });
-  };
-
   return (
-    <View style={styles.container}>
-      <View style={styles.buttonContainer}>
-        <Button
-          mode="contained"
-          style={styles.button}
-          labelStyle={styles.buttonLabel}
-          onPress={() => navigation.navigate('AddEntry')}
-        >
+    <View style={theme.container}>
+      <Text style={theme.title}>Gym Stats & Weight Tracker</Text>
+      <View style={theme.buttonContainer}>
+        <Button mode="contained" onPress={addEntry} style={theme.button} labelStyle={theme.buttonText}>
           Add Entry
         </Button>
-        <Button
-          mode="contained"
-          style={styles.button}
-          labelStyle={styles.buttonLabel}
-          onPress={() => navigation.navigate('Graph')}
-        >
+        <Button mode="contained" onPress={viewGraph} style={theme.button} labelStyle={theme.buttonText}>
           View Graph
         </Button>
       </View>
-      <Text style={styles.title}>Gym Entries</Text>
-      {entries.length === 0 ? (
-        <Text style={styles.emptyText}>No entries yet</Text>
-      ) : (
-        <FlatList
-          data={entries}
-          renderItem={({ item, index }) => (
-            <EntryListItem item={item} onEdit={() => editEntry(index)} onDelete={() => deleteEntry(index)} />
-          )}
-          keyExtractor={(_, index) => index.toString()}
-        />
-      )}
+      <FlatList
+        data={entries}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item, index }) => (
+          <EntryListItem
+            entry={item}
+            onEdit={() => editEntry(index)}
+            onDelete={() => deleteEntry(index)}
+          />
+        )}
+        ListEmptyComponent={<Text style={theme.emptyText}>No entries yet</Text>}
+      />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-    padding: 16,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  button: {
-    flex: 1,
-    marginHorizontal: 8,
-    backgroundColor: theme.colors.primary,
-    borderRadius: 8,
-    elevation: 4,
-  },
-  buttonLabel: {
-    fontFamily: 'Inter-Bold',
-    fontSize: 16,
-    color: theme.colors.text,
-  },
-  title: {
-    fontFamily: 'Inter-Bold',
-    fontSize: 20,
-    color: theme.colors.text,
-    marginBottom: 8,
-  },
-  emptyText: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 16,
-    color: theme.colors.text,
-    textAlign: 'center',
-    marginTop: 20,
-  },
-});

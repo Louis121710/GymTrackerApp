@@ -1,101 +1,72 @@
-// AddEntryScreen.js
-import React, { useState } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Alert } from 'react-native';
 import { TextInput, Button, Switch, Text } from 'react-native-paper';
-import { loadEntries, saveEntries } from '../utils/storage';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import moment from 'moment';
+import { saveEntries, loadEntries } from '../utils/storage';
 import { theme } from '../../theme';
 
-export default function AddEntryScreen({ route, navigation }) {
-  const { entry, index } = route.params || {};
-  const [date, setDate] = useState(entry ? entry.date : new Date().toISOString().split('T')[0]);
-  const [weight, setWeight] = useState(entry ? entry.body_weight.toString() : '');
-  const [cardio, setCardio] = useState(!!entry?.did_cardio);
+export default function AddEntryScreen() {
+  const [weight, setWeight] = useState('');
+  const [cardio, setCardio] = useState(false);
+  const [date, setDate] = useState(moment().format('YYYY-MM-DD'));
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { index, entry } = route.params || {};
 
-  const handleSave = async () => {
-    if (!weight || isNaN(parseFloat(weight)) || parseFloat(weight) <= 0) {
-      Alert.alert('Invalid Input', 'Weight must be a positive number');
+  useEffect(() => {
+    if (entry) {
+      setWeight(entry.body_weight.toString());
+      setCardio(entry.cardio || false);
+      setDate(entry.date);
+    }
+  }, [entry]);
+
+  const saveEntry = async () => {
+    if (!weight || isNaN(weight) || parseFloat(weight) <= 0) {
+      Alert.alert('Invalid Input', 'Please enter a valid weight.');
       return;
     }
-
-    const newEntry = { date, body_weight: parseFloat(weight), did_cardio: cardio ? 1 : 0 };
-    const entries = await loadEntries();
-    if (index !== undefined) {
-      entries[index] = newEntry; // Edit
-    } else {
-      entries.push(newEntry); // Add
+    if (!moment(date, 'YYYY-MM-DD', true).isValid()) {
+      Alert.alert('Invalid Date', 'Use YYYY-MM-DD format.');
+      return;
     }
-    await saveEntries(entries);
+    const newEntry = { body_weight: parseFloat(weight), cardio, date };
+    const currentEntries = await loadEntries() || [];
+    let updatedEntries;
+    if (index !== undefined) {
+      updatedEntries = [...currentEntries];
+      updatedEntries[index] = newEntry;
+    } else {
+      updatedEntries = [newEntry, ...currentEntries];
+    }
+    await saveEntries(updatedEntries);
     navigation.goBack();
   };
 
   return (
-    <View style={styles.container}>
+    <View style={theme.container}>
+      <Text style={theme.title}>{index !== undefined ? 'Edit Entry' : 'Add Entry'}</Text>
+      <TextInput
+        label="Weight (kg)"
+        value={weight}
+        onChangeText={setWeight}
+        keyboardType="numeric"
+        style={theme.input}
+      />
       <TextInput
         label="Date (YYYY-MM-DD)"
         value={date}
         onChangeText={setDate}
-        style={styles.input}
-        theme={{ colors: { text: theme.colors.text, primary: theme.colors.accent } }}
+        style={theme.input}
       />
-      <TextInput
-        label="Body Weight (kg)"
-        value={weight}
-        onChangeText={setWeight}
-        keyboardType="numeric"
-        style={styles.input}
-        theme={{ colors: { text: theme.colors.text, primary: theme.colors.accent } }}
-      />
-      <View style={styles.switchContainer}>
-        <Text style={styles.switchLabel}>Did Cardio?</Text>
-        <Switch
-          value={cardio}
-          onValueChange={setCardio}
-          color={theme.colors.accent}
-        />
+      <View style={theme.switchContainer}>
+        <Text>Cardio</Text>
+        <Switch value={cardio} onValueChange={setCardio} />
       </View>
-      <Button
-        mode="contained"
-        style={styles.button}
-        labelStyle={styles.buttonLabel}
-        onPress={handleSave}
-      >
-        Save Entry
+      <Button mode="contained" onPress={saveEntry} style={theme.button} labelStyle={theme.buttonText}>
+        Save
       </Button>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-    padding: 16,
-  },
-  input: {
-    marginVertical: 8,
-    backgroundColor: theme.colors.surface,
-    borderRadius: 8,
-  },
-  switchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 16,
-  },
-  switchLabel: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 16,
-    color: theme.colors.text,
-    marginRight: 16,
-  },
-  button: {
-    backgroundColor: theme.colors.primary,
-    borderRadius: 8,
-    padding: 8,
-    elevation: 4,
-  },
-  buttonLabel: {
-    fontFamily: 'Inter-Bold',
-    fontSize: 16,
-    color: theme.colors.text,
-  },
-});
