@@ -1,54 +1,61 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
+import { Dimensions } from 'react-native';
+import { Appbar } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 import { loadEntries } from '../utils/storage';
 import { theme } from '../../theme';
 
 export default function GraphScreen() {
   const [entries, setEntries] = useState([]);
+  const navigation = useNavigation();
 
   useEffect(() => {
     const load = async () => {
-      const data = await loadEntries() || [];
-      setEntries(data);
+      const data = await loadEntries();
+      setEntries(data || []);
     };
     load();
   }, []);
 
-  if (entries.length === 0) {
-    return (
-      <View style={theme.container}>
-        <Text style={theme.emptyText}>No data to display graph</Text>
-      </View>
-    );
-  }
-
-  const data = {
-    labels: entries.map(e => e.date.split('-').slice(1).join('-')), // MM-DD
-    datasets: [{ data: entries.map(e => e.body_weight), color: () => theme.colors.primary }],
+  const chartData = {
+    labels: entries.map(e => e.date),
+    datasets: [{
+      data: entries.map(e => e.body_weight),
+    }],
   };
 
   return (
-    <View style={theme.container}>
-      <Text style={theme.title}>Weight Progress</Text>
-      <LineChart
-        data={data}
-        width={Dimensions.get('window').width - 40}
-        height={220}
-        yAxisLabel=""
-        chartConfig={{
-          backgroundColor: theme.colors.background,
-          backgroundGradientFrom: theme.colors.background,
-          backgroundGradientTo: theme.colors.background,
-          decimalPlaces: 1,
-          color: (opacity = 1) => `rgba(198, 40, 40, ${opacity})`,
-          labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-          style: { borderRadius: 16 },
-          propsForDots: { r: '4', strokeWidth: '1', stroke: '#C62828' },
-        }}
-        bezier
-        style={{ marginVertical: 8, borderRadius: 16 }}
-      />
+    <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
+      <Appbar.Header>
+        <Appbar.BackAction onPress={() => navigation.goBack()} />
+        <Appbar.Content title={<Text>Weight Graph</Text>} titleStyle={{ fontFamily: 'Inter-Bold', color: theme.colors.text }} />
+      </Appbar.Header>
+      <View style={{ padding: 16, alignItems: 'center' }}>
+        {entries.length === 0 ? (
+          <Text style={{ color: theme.colors.text, fontFamily: 'Inter-Regular' }}>No data available</Text>
+        ) : (
+          <LineChart
+            data={chartData}
+            width={Dimensions.get('window').width - 32}
+            height={220}
+            yAxisSuffix=" kg"
+            chartConfig={{
+              backgroundColor: theme.colors.surface,
+              backgroundGradientFrom: theme.colors.surface,
+              backgroundGradientTo: theme.colors.surface,
+              decimalPlaces: 1,
+              color: (opacity = 1) => theme.colors.primary,
+              labelColor: (opacity = 1) => theme.colors.text,
+              style: { borderRadius: theme.roundness },
+              propsForDots: { r: '6', strokeWidth: '2', stroke: theme.colors.primary },
+            }}
+            bezier
+            style={{ borderRadius: theme.roundness, elevation: theme.elevation.level2 }}
+          />
+        )}
+      </View>
     </View>
   );
 }
