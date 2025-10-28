@@ -3,16 +3,21 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start"
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.2",
     "@expo/vector-icons": "^15.0.2",
     "@react-native-async-storage/async-storage": "2.2.0",
-    "@react-native-community/eslint-config": "^3.2.0",
+    "@react-navigation/bottom-tabs": "^7.5.0",
     "@react-navigation/native": "^7.1.18",
     "@react-navigation/stack": "^7.5.0",
+    "expo": "^54.0.20",
     "expo-font": "~14.0.9",
+    "expo-linear-gradient": "^15.0.7",
     "expo-updates": "~29.0.12",
     "moment": "^2.30.1",
     "react": "19.1.0",
@@ -22,16 +27,9 @@
     "react-native-paper": "^5.14.5",
     "react-native-safe-area-context": "~5.6.0",
     "react-native-screens": "~4.16.0",
-    "react-native-svg": "15.12.1",
-    "undefined": "@expo/google-fonts/inter"
+    "react-native-svg": "15.12.1"
   },
   "devDependencies": {
-    "@eslint/js": "^9.38.0",
-    "@react-native-community/cli": "^20.0.2",
-    "babel-preset-expo": "^54.0.6",
-    "eslint": "^8.57.1",
-    "eslint-plugin-react": "^7.37.5",
-    "globals": "^16.4.0",
-    "typescript-eslint": "^8.46.2"
+    "@babel/core": "^7.20.0"
   }
 }
