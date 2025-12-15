@@ -75,6 +75,10 @@ eas build:configure
 eas build -p android --profile preview --local   # local if you have Android tooling
 # or run in the cloud
 eas build -p android --profile preview
+
+# Shortcut scripts
+npm run build:apk   # uses profile preview (APK)
+npm run build:aab   # uses profile production (AAB)
 ```
 After each app update, rerun the build to generate a fresh APK/AAB for distribution.
 
