@@ -18,6 +18,7 @@ yarn-error.log*
 # Expo
 .expo/
 .expo-shared/
+.cursor/
 
 # OS generated files
 .DS_Store
