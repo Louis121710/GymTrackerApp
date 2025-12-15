@@ -4,19 +4,17 @@ import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import appStyle from '../../appStyle';
-import { loadEntries, getCurrentUser, loadUsers } from '../utils/storage';
+import { loadEntries, getCurrentUser } from '../utils/storage';
+import { useUserProfile } from '../context/UserProfileContext';
 
 const { width } = Dimensions.get('window');
 
 const HomePage = () => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+  const { goalWeight, goal } = useUserProfile();
   const [entries, setEntries] = useState([]);
   const [currentUser, setCurrentUser] = useState('');
-  const [userData, setUserData] = useState({
-    goalWeight: 75,
-    goal: 'lose_weight'
-  });
   const [stats, setStats] = useState({
     totalWorkouts: 0,
     currentWeight: 0,
@@ -58,7 +56,7 @@ const HomePage = () => {
   useEffect(() => {
     loadUserData();
     setRandomQuote();
-  }, [isFocused]);
+  }, [isFocused, goalWeight, goal]);
 
   const setRandomQuote = () => {
     const randomIndex = Math.floor(Math.random() * dailyQuotes.length);
@@ -130,22 +128,21 @@ const HomePage = () => {
     const username = await getCurrentUser();
     setCurrentUser(username);
 
-    // Load user profile data to get goal weight
-    if (username) {
-      const users = await loadUsers();
-      const user = users.find(u => u.username === username);
-      if (user) {
-        const userGoalWeight = parseFloat(user.goalWeight) || 75;
-        const userGoal = user.goal || 'lose_weight';
-
-        setUserData({
-          goalWeight: userGoalWeight,
-          goal: userGoal
-        });
-      }
+    if (!username) {
+      setEntries([]);
+      setStats(prev => ({
+        ...prev,
+        totalWorkouts: 0,
+        currentWeight: 0,
+        goalWeight: goalWeight,
+        cardioSessions: 0,
+        currentStreak: 0,
+        longestStreak: 0
+      }));
+      return;
     }
 
-    const loadedEntries = await loadEntries();
+    const loadedEntries = await loadEntries(username);
     setEntries(loadedEntries);
 
     const { currentStreak, longestStreak } = calculateStreak(loadedEntries);
@@ -157,7 +154,7 @@ const HomePage = () => {
       setStats({
         totalWorkouts: loadedEntries.length,
         currentWeight: latestEntry.body_weight,
-        goalWeight: userData.goalWeight, // Use the updated goal weight
+        goalWeight: goalWeight, // Use goal weight from context
         cardioSessions: cardioSessions,
         currentStreak,
         longestStreak
@@ -165,7 +162,7 @@ const HomePage = () => {
     } else {
       setStats(prev => ({
         ...prev,
-        goalWeight: userData.goalWeight, // Use the updated goal weight
+        goalWeight: goalWeight, // Use goal weight from context
         currentStreak,
         longestStreak
       }));
@@ -177,7 +174,7 @@ const HomePage = () => {
     if (!stats.currentWeight || !stats.goalWeight) return 0;
 
     // For weight loss goal (current > goal)
-    if (userData.goal === 'lose_weight') {
+    if (goal === 'lose_weight') {
       if (stats.currentWeight <= stats.goalWeight) {
         return 100; // Goal achieved
       } else {
@@ -192,7 +189,7 @@ const HomePage = () => {
       }
     }
     // For weight gain goal (current < goal)
-    else if (userData.goal === 'gain_muscle') {
+    else if (goal === 'gain_muscle') {
       if (stats.currentWeight >= stats.goalWeight) {
         return 100; // Goal achieved
       } else {
@@ -226,7 +223,7 @@ const HomePage = () => {
 
     const difference = stats.currentWeight - stats.goalWeight;
 
-    if (userData.goal === 'lose_weight') {
+    if (goal === 'lose_weight') {
       if (difference > 0) {
         return `${difference.toFixed(1)}kg to lose`;
       } else if (difference < 0) {
@@ -234,7 +231,7 @@ const HomePage = () => {
       } else {
         return 'Goal achieved! 🎉';
       }
-    } else if (userData.goal === 'gain_muscle') {
+    } else if (goal === 'gain_muscle') {
       if (difference < 0) {
         return `${Math.abs(difference).toFixed(1)}kg to gain`;
       } else if (difference > 0) {
@@ -351,11 +348,11 @@ const HomePage = () => {
           <View style={styles.progressSection}>
             <View style={styles.progressHeader}>
               <Text style={styles.progressLabel}>
-                Progress to {userData.goal === 'lose_weight' ? 'Weight Loss' :
-                           userData.goal === 'gain_muscle' ? 'Muscle Gain' : 'Maintenance'}
+                Progress to {goal === 'lose_weight' ? 'Weight Loss' :
+                           goal === 'gain_muscle' ? 'Muscle Gain' : 'Maintenance'}
               </Text>
               <Text style={styles.progressText}>
-                {stats.currentWeight}kg / {userData.goalWeight}kg
+                {stats.currentWeight}kg / {goalWeight}kg
               </Text>
             </View>
             <Text style={styles.progressSubtext}>{getProgressText()}</Text>
@@ -433,7 +430,7 @@ const HomePage = () => {
           />
           <StatCard
             icon="flag"
-            value={`${userData.goalWeight}kg`}
+            value={`${goalWeight}kg`}
             label="Goal Weight"
             color="#FF9800"
           />

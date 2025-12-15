@@ -1,21 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LineChart, BarChart } from 'react-native-chart-kit';
 import appStyle from '../../appStyle';
-import { loadEntries } from '../utils/storage';
+import { loadEntries, getCurrentUser } from '../utils/storage';
 
 const ChartPage = () => {
   const [entries, setEntries] = useState([]);
   const [activeTab, setActiveTab] = useState('weight');
   const [timeRange, setTimeRange] = useState('week');
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     loadEntriesData();
-  }, []);
+  }, [isFocused]);
 
   const loadEntriesData = async () => {
-    const loadedEntries = await loadEntries();
+    const username = await getCurrentUser();
+    if (!username) {
+      setEntries([]);
+      return;
+    }
+    const loadedEntries = await loadEntries(username);
     // Sort by timestamp ascending for charts
     const sortedEntries = loadedEntries.sort((a, b) => a.timestamp - b.timestamp);
     setEntries(sortedEntries);
