@@ -62,6 +62,22 @@ npm install expo@~54.0.29 expo-font@~14.0.10 expo-linear-gradient@~15.0.8 expo-u
 - `npm run ios` – start with iOS simulator (macOS)
 - `npm run web` – start web
 
+## Building an APK
+This project uses Expo. To produce an installable Android build (APK/AAB):
+```bash
+# Install EAS CLI if you don’t have it
+npm install -g eas-cli
+
+# Configure (one-time)
+eas build:configure
+
+# Build Android (APK)
+eas build -p android --profile preview --local   # local if you have Android tooling
+# or run in the cloud
+eas build -p android --profile preview
+```
+After each app update, rerun the build to generate a fresh APK/AAB for distribution.
+
 ## Troubleshooting
 - **Expo fetch failed**: check network/VPN; retry `npm start`, or `npx expo start --offline` if offline.
 - **Execution policy**: see the PowerShell section above.
