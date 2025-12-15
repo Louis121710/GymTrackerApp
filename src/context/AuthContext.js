@@ -26,7 +26,8 @@ export const AuthProvider = ({ children }) => {
     try {
       const currentUser = await getCurrentUser();
       console.log('AuthContext - Current user:', currentUser);
-      setUser(currentUser);
+      // Only set user if it's a valid non-empty string
+      setUser(currentUser && currentUser.trim() !== '' ? currentUser : null);
     } catch (error) {
       console.error('Auth check error:', error);
       setUser(null);

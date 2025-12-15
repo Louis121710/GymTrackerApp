@@ -1,19 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, RefreshControl } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import appStyle from '../../appStyle';
-import { loadEntries, saveEntries } from '../utils/storage';
+import { loadEntries, getCurrentUser, deleteEntry as deleteEntryStorage } from '../utils/storage';
 
 const RecordListPage = () => {
   const [entries, setEntries] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     loadEntriesData();
-  }, []);
+  }, [isFocused]);
 
   const loadEntriesData = async () => {
-    const loadedEntries = await loadEntries();
+    const username = await getCurrentUser();
+    if (!username) {
+      setEntries([]);
+      return;
+    }
+    const loadedEntries = await loadEntries(username);
     const sortedEntries = loadedEntries.sort((a, b) => b.timestamp - a.timestamp);
     setEntries(sortedEntries);
   };
@@ -34,9 +41,8 @@ const RecordListPage = () => {
           text: 'Delete',
           style: 'destructive',
           onPress: async () => {
-            const updatedEntries = entries.filter(entry => entry.id !== id);
-            await saveEntries(updatedEntries);
-            setEntries(updatedEntries);
+            await deleteEntryStorage(id);
+            await loadEntriesData(); // Reload entries
           }
         }
       ]

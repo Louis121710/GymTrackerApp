@@ -15,9 +15,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import appStyle from '../../appStyle';
 import { getCurrentUser, loadUsers, saveUsers } from '../utils/storage';
 import { useAuth } from '../context/AuthContext';
+import { useUserProfile } from '../context/UserProfileContext';
 
 const ProfilePage = () => {
   const { logout } = useAuth();
+  const { profile, refreshProfile } = useUserProfile();
   const [currentUser, setCurrentUser] = useState('');
   const [userData, setUserData] = useState({
     username: '',
@@ -41,25 +43,34 @@ const ProfilePage = () => {
 
   useEffect(() => {
     loadUserProfile();
-  }, []);
+  }, [profile]);
 
   const loadUserProfile = async () => {
     const username = await getCurrentUser();
     setCurrentUser(username);
 
-    if (username) {
+    // Use profile from context, fallback to loading from storage
+    if (profile && profile.username) {
+      setUserData({
+        username: profile.username,
+        email: profile.email || '',
+        height: profile.height || '',
+        age: profile.age || '',
+        goalWeight: profile.goalWeight || '75',
+        goal: profile.goal || 'lose_weight'
+      });
+    } else if (username) {
       const users = await loadUsers();
       const user = users.find(u => u.username === username);
       if (user) {
-        setUserData(prev => ({
-          ...prev,
+        setUserData({
           username: user.username,
           email: user.email || '',
           height: user.height || '',
           age: user.age || '',
           goalWeight: user.goalWeight || '75',
           goal: user.goal || 'lose_weight'
-        }));
+        });
       }
     }
   };
@@ -78,6 +89,8 @@ const ProfilePage = () => {
 
       await saveUsers(updatedUsers);
       setIsEditing(false);
+      // Refresh profile context to update all screens
+      refreshProfile();
       Alert.alert('Success', 'Profile updated successfully!');
     } catch (error) {
       Alert.alert('Error', 'Failed to update profile');

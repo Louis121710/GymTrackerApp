@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -13,33 +13,19 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import appStyle from '../../appStyle';
-import { loadEntries, saveEntries, getCurrentUser, loadUsers } from '../utils/storage';
+import { loadEntries, saveEntries, getCurrentUser } from '../utils/storage';
+import { useUserProfile } from '../context/UserProfileContext';
 
 const AddRecordPage = () => {
   const navigation = useNavigation();
+  const { goalWeight } = useUserProfile();
   const [date, setDate] = useState(new Date().toLocaleDateString());
   const [bodyWeight, setBodyWeight] = useState('');
   const [didCardio, setDidCardio] = useState(false);
   const [workoutNotes, setWorkoutNotes] = useState('');
-  const [userGoalWeight, setUserGoalWeight] = useState('75');
 
   const weightInputRef = useRef(null);
   const notesInputRef = useRef(null);
-
-  useEffect(() => {
-    loadUserGoalWeight();
-  }, []);
-
-  const loadUserGoalWeight = async () => {
-    const username = await getCurrentUser();
-    if (username) {
-      const users = await loadUsers();
-      const user = users.find(u => u.username === username);
-      if (user && user.goalWeight) {
-        setUserGoalWeight(user.goalWeight);
-      }
-    }
-  };
 
   const handleSave = async () => {
     if (!bodyWeight) {
@@ -53,14 +39,19 @@ const AddRecordPage = () => {
       body_weight: parseFloat(bodyWeight),
       did_cardio: didCardio,
       notes: workoutNotes,
-      goalWeight: parseFloat(userGoalWeight) || 75,
+      goalWeight: goalWeight,
       timestamp: new Date().getTime()
     };
 
     try {
-      const existingEntries = await loadEntries();
+      const username = await getCurrentUser();
+      if (!username) {
+        Alert.alert('Error', 'You must be logged in to save entries');
+        return;
+      }
+      const existingEntries = await loadEntries(username);
       const updatedEntries = [...existingEntries, newEntry];
-      await saveEntries(updatedEntries);
+      await saveEntries(updatedEntries, username);
 
       Alert.alert('Success', 'Workout record saved!', [
         { text: 'OK', onPress: () => navigation.goBack() }
@@ -139,7 +130,7 @@ const AddRecordPage = () => {
             <View style={styles.inputContent}>
               <Text style={styles.inputLabel}>Goal Weight</Text>
               <View style={styles.weightInput}>
-                <Text style={styles.goalWeightText}>{userGoalWeight} kg</Text>
+                <Text style={styles.goalWeightText}>{goalWeight} kg</Text>
                 <TouchableOpacity
                   style={styles.editGoalButton}
                   onPress={() => navigation.navigate('Profile')}
@@ -148,7 +139,7 @@ const AddRecordPage = () => {
                 </TouchableOpacity>
               </View>
               <Text style={styles.goalHint}>
-                You're {bodyWeight ? (parseFloat(bodyWeight) - parseFloat(userGoalWeight)).toFixed(1) : '0'}kg from your goal
+                You're {bodyWeight ? (parseFloat(bodyWeight) - goalWeight).toFixed(1) : '0'}kg from your goal
               </Text>
             </View>
           </TouchableOpacity>
@@ -222,15 +213,15 @@ const AddRecordPage = () => {
                   </View>
                   <View style={styles.progressStat}>
                     <Text style={styles.progressLabel}>Goal</Text>
-                    <Text style={styles.progressValue}>{userGoalWeight} kg</Text>
+                    <Text style={styles.progressValue}>{goalWeight} kg</Text>
                   </View>
                   <View style={styles.progressStat}>
                     <Text style={styles.progressLabel}>Difference</Text>
                     <Text style={[
                       styles.progressValue,
-                      { color: (parseFloat(bodyWeight) - parseFloat(userGoalWeight)) > 0 ? '#EF5350' : '#4CAF50' }
+                      { color: (parseFloat(bodyWeight) - goalWeight) > 0 ? '#EF5350' : '#4CAF50' }
                     ]}>
-                      {bodyWeight ? (parseFloat(bodyWeight) - parseFloat(userGoalWeight)).toFixed(1) : '0'} kg
+                      {bodyWeight ? (parseFloat(bodyWeight) - goalWeight).toFixed(1) : '0'} kg
                     </Text>
                   </View>
                 </View>

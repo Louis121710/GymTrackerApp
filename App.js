@@ -6,25 +6,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useFonts, Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
 import MainTabs from './src/navigation/MainTabs';
 import appStyle from './appStyle';
-
-// Try different import paths
-let AuthProvider;
-try {
-  // Try the first path
-  const authContext = require('./src/context/AuthContext');
-  AuthProvider = authContext.AuthProvider;
-} catch (error) {
-  console.log('First import failed, trying alternative...');
-  try {
-    // Try without ./src
-    const authContext = require('./context/AuthContext');
-    AuthProvider = authContext.AuthProvider;
-  } catch (error2) {
-    console.log('All imports failed, creating simple AuthProvider...');
-    // Create a simple fallback
-    AuthProvider = ({ children }) => children;
-  }
-}
+import { AuthProvider } from './src/context/AuthContext';
+import { UserProfileProvider } from './src/context/UserProfileContext';
 
 const AppRoot = () => {
   const [fontsLoaded] = useFonts({
@@ -53,9 +36,11 @@ const AppRoot = () => {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider theme={styleTheme}>
         <AuthProvider>
-          <NavigationContainer theme={styleTheme}>
-            <MainTabs />
-          </NavigationContainer>
+          <UserProfileProvider>
+            <NavigationContainer theme={styleTheme}>
+              <MainTabs />
+            </NavigationContainer>
+          </UserProfileProvider>
         </AuthProvider>
       </ThemeProvider>
     </GestureHandlerRootView>
