@@ -7,6 +7,8 @@ yarn-error.log*
 # Production builds
 /dist
 /build
+*.apk
+*.aab
 
 # Environment variables
 .env

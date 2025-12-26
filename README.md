@@ -62,25 +62,66 @@ npm install expo@~54.0.29 expo-font@~14.0.10 expo-linear-gradient@~15.0.8 expo-u
 - `npm run ios` – start with iOS simulator (macOS)
 - `npm run web` – start web
 
-## Building an APK
-This project uses Expo. To produce an installable Android build (APK/AAB):
-```bash
-# Install EAS CLI if you don’t have it
-npm install -g eas-cli
+## Building Android APK
 
-# Configure (one-time)
-eas build:configure
+This project uses **Expo Application Services (EAS)** to build installable Android APKs.
 
-# Build Android (APK)
-eas build -p android --profile preview --local   # local if you have Android tooling
-# or run in the cloud
-eas build -p android --profile preview
+### Prerequisites
+- Node.js and npm installed
+- Expo account (free): https://expo.dev/signup
+- EAS CLI installed: `npm install -g eas-cli`
 
-# Shortcut scripts
-npm run build:apk   # uses profile preview (APK)
-npm run build:aab   # uses profile production (AAB)
-```
-After each app update, rerun the build to generate a fresh APK/AAB for distribution.
+### Step-by-step build process
+
+1. **Login to Expo** (one-time setup):
+   ```bash
+   npx eas-cli login
+   ```
+
+2. **Build the APK** (cloud build - recommended):
+   ```bash
+   npm run build:apk
+   ```
+   Or use the direct command:
+   ```bash
+   npx eas-cli build --platform android --profile preview
+   ```
+
+3. **Wait for build to complete** (5-10 minutes):
+   - The build runs in the cloud on Expo's servers
+   - You'll see a progress indicator and a link to view build logs
+   - You can press `Ctrl+C` to exit - the build continues in the background
+
+4. **Download your APK**:
+   - Once complete, you'll get a download URL like: `https://expo.dev/artifacts/eas/...apk`
+   - Click the link or copy the URL to download
+   - Or download via PowerShell:
+     ```powershell
+     Invoke-WebRequest -Uri "YOUR_APK_URL" -OutFile "gym-tracker.apk"
+     ```
+
+### Build profiles
+
+- **Preview profile** (APK): `npm run build:apk`
+  - Creates an `.apk` file you can install directly on Android devices
+  - Good for testing and sharing with users
+  
+- **Production profile** (AAB): `npm run build:aab`
+  - Creates an `.aab` file for Google Play Store submission
+  - Required format for Play Store releases
+
+### Important notes
+
+- **After making code changes**, you must rebuild to get a new APK with your updates
+- The project includes `.npmrc` with `legacy-peer-deps=true` to handle dependency conflicts
+- Builds are tied to your Expo account - check https://expo.dev/accounts/[your-username]/projects/gym-tracker/builds for build history
+- First build may take longer; subsequent builds are faster due to caching
+
+### Troubleshooting builds
+
+- **Build fails during dependencies**: Ensure `.npmrc` exists with `legacy-peer-deps=true`
+- **Authentication errors**: Run `npx eas-cli login` again
+- **Network issues**: Check your internet connection; EAS builds require upload/download
 
 ## Troubleshooting
 - **Expo fetch failed**: check network/VPN; retry `npm start`, or `npx expo start --offline` if offline.
