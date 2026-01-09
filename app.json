@@ -27,7 +27,6 @@
     },
     "android": {
       "package": "com.louis121710.gymtracker",
-      "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#000000"
       }
