@@ -55,7 +55,19 @@ const LoginPage = () => {
           height: '',
           age: '',
           goalWeight: '75',
-          goal: 'lose_weight'
+          goal: 'lose_weight',
+          bio: '',
+          website: '',
+          instagram: '',
+          twitter: '',
+          profileVisibility: 'public',
+          memberSince: Date.now(),
+          bodyFat: '',
+          chest: '',
+          waist: '',
+          hips: '',
+          biceps: '',
+          thighs: ''
         };
 
         await saveUsers([...users, newUser]);
@@ -74,7 +86,7 @@ const LoginPage = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <LinearGradient
-        colors={['#2C2C2C', '#1C1C1C', '#0A0A0A']}
+        colors={appStyle.gradients.primary}
         style={styles.gradient}
       >
         <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -187,14 +199,12 @@ const styles = StyleSheet.create({
     fontFamily: appStyle.fonts.regular.fontFamily,
   },
   form: {
-    backgroundColor: appStyle.colors.surface,
-    borderRadius: 20,
+    backgroundColor: appStyle.colors.cardBackground,
+    borderRadius: 24,
     padding: 25,
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
+    borderWidth: 1,
+    borderColor: appStyle.colors.cardBorder,
+    ...appStyle.shadows.large,
   },
   authTitle: {
     color: appStyle.colors.text,
@@ -204,23 +214,24 @@ const styles = StyleSheet.create({
     marginBottom: 25,
   },
   input: {
-    backgroundColor: '#363636',
+    backgroundColor: appStyle.colors.surfaceElevated,
     color: appStyle.colors.text,
     padding: 15,
-    borderRadius: 12,
+    borderRadius: 16,
     marginBottom: 15,
     fontSize: 16,
     fontFamily: appStyle.fonts.regular.fontFamily,
     borderWidth: 1,
-    borderColor: 'transparent',
+    borderColor: appStyle.colors.cardBorder,
   },
   authButton: {
-    backgroundColor: appStyle.colors.primary,
+    backgroundColor: appStyle.colors.accent,
     padding: 16,
-    borderRadius: 12,
+    borderRadius: 16,
     alignItems: 'center',
     marginTop: 10,
     marginBottom: 15,
+    ...appStyle.shadows.medium,
   },
   authButtonText: {
     color: '#FFFFFF',
@@ -239,10 +250,12 @@ const styles = StyleSheet.create({
   demoSection: {
     marginTop: 20,
     padding: 15,
-    backgroundColor: '#363636',
-    borderRadius: 8,
+    backgroundColor: appStyle.colors.surfaceElevated,
+    borderRadius: 16,
     borderLeftWidth: 4,
-    borderLeftColor: appStyle.colors.primary,
+    borderLeftColor: appStyle.colors.accent,
+    borderWidth: 1,
+    borderColor: appStyle.colors.cardBorder,
   },
   demoText: {
     color: appStyle.colors.text,

@@ -211,11 +211,11 @@ const HomePage = () => {
 
   const getProgressColor = () => {
     const progress = getProgressPercentage();
-    if (progress >= 100) return '#4CAF50'; // Green when goal achieved
-    if (progress >= 75) return '#8BC34A';  // Light green
-    if (progress >= 50) return '#FFC107';  // Yellow
-    if (progress >= 25) return '#FF9800';  // Orange
-    return '#F44336'; // Red
+    if (progress >= 100) return '#22C55E'; // Green when goal achieved
+    if (progress >= 75) return '#F87171';  // Light red
+    if (progress >= 50) return '#EF4444';  // Medium red
+    if (progress >= 25) return '#DC2626';  // Red
+    return '#991B1B'; // Dark red
   };
 
   const getProgressText = () => {
@@ -283,7 +283,7 @@ const HomePage = () => {
 
   const StreakCard = ({ streak, label, isMain = false }) => (
     <LinearGradient
-      colors={isMain ? ['#FF6B35', '#C62828'] : ['#2C2C2C', '#363636']}
+      colors={isMain ? appStyle.gradients.accent : appStyle.gradients.card}
       style={[styles.streakCard, isMain && styles.mainStreakCard]}
     >
       <Text style={[styles.streakValue, isMain && styles.mainStreakValue]}>
@@ -301,13 +301,10 @@ const HomePage = () => {
   );
 
   const QuickAction = ({ icon, title, subtitle, onPress, color }) => (
-    <TouchableOpacity style={styles.quickAction} onPress={onPress}>
-      <LinearGradient
-        colors={[color, '#C62828']}
-        style={styles.quickActionGradient}
-      >
+    <TouchableOpacity onPress={onPress} style={styles.quickAction}>
+      <View style={styles.quickActionGradient}>
         <MaterialCommunityIcons name={icon} size={28} color="#FFFFFF" />
-      </LinearGradient>
+      </View>
       <View style={styles.quickActionText}>
         <Text style={styles.quickActionTitle}>{title}</Text>
         <Text style={styles.quickActionSubtitle}>{subtitle}</Text>
@@ -319,7 +316,7 @@ const HomePage = () => {
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Enhanced Header */}
       <LinearGradient
-        colors={['#2C2C2C', '#1C1C1C', '#0A0A0A']}
+        colors={appStyle.gradients.header}
         style={styles.header}
       >
         <View style={styles.headerContent}>
@@ -375,13 +372,15 @@ const HomePage = () => {
       </LinearGradient>
 
       {/* Daily Motivation Card */}
-      <TouchableOpacity style={styles.quoteCard} onPress={setRandomQuote}>
-        <MaterialCommunityIcons name="lightbulb-on" size={24} color="#FFD700" />
-        <View style={styles.quoteContent}>
-          <Text style={styles.quoteText}>"{dailyQuote.quote}"</Text>
-          <Text style={styles.quoteAuthor}>- {dailyQuote.author}</Text>
+      <TouchableOpacity onPress={setRandomQuote}>
+        <View style={styles.quoteCard}>
+          <MaterialCommunityIcons name="lightbulb-on" size={24} color="#FFD700" />
+          <View style={styles.quoteContent}>
+            <Text style={styles.quoteText}>"{dailyQuote.quote}"</Text>
+            <Text style={styles.quoteAuthor}>- {dailyQuote.author}</Text>
+          </View>
+          <MaterialCommunityIcons name="refresh" size={20} color={appStyle.colors.textSecondary} />
         </View>
-        <MaterialCommunityIcons name="refresh" size={20} color="#888" />
       </TouchableOpacity>
 
       {/* Streak Section */}
@@ -420,25 +419,25 @@ const HomePage = () => {
             icon="dumbbell"
             value={stats.totalWorkouts}
             label="Workouts"
-            color="#4CAF50"
+            color={appStyle.colors.primary}
           />
           <StatCard
             icon="scale"
             value={`${stats.currentWeight || 0}kg`}
             label="Current Weight"
-            color="#2196F3"
+            color={appStyle.colors.accentLight}
           />
           <StatCard
             icon="flag"
             value={`${goalWeight}kg`}
             label="Goal Weight"
-            color="#FF9800"
+            color={appStyle.colors.primaryLight}
           />
           <StatCard
             icon="run"
             value={stats.cardioSessions}
             label="Cardio Sessions"
-            color="#E91E63"
+            color={appStyle.colors.accent}
           />
         </View>
       </View>
@@ -462,21 +461,21 @@ const HomePage = () => {
             title="View History"
             subtitle="See all records"
             onPress={() => navigation.navigate('Records')}
-            color="#4CAF50"
+            color={appStyle.colors.primary}
           />
           <QuickAction
             icon="chart-line"
             title="Progress"
             subtitle="View charts"
-            onPress={() => navigation.navigate('Charts')}
-            color="#2196F3"
+            onPress={() => navigation.navigate('Stats')}
+            color={appStyle.colors.accentLight}
           />
           <QuickAction
             icon="account"
             title="Profile"
             subtitle="Manage account"
             onPress={() => navigation.navigate('Profile')}
-            color="#9C27B0"
+            color={appStyle.colors.accent}
           />
         </View>
       </View>
@@ -562,11 +561,13 @@ const styles = StyleSheet.create({
   statPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.1)',
+    backgroundColor: 'rgba(239, 83, 80, 0.15)',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
     gap: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(239, 83, 80, 0.3)',
   },
   statPillText: {
     color: '#FFFFFF',
@@ -574,9 +575,12 @@ const styles = StyleSheet.create({
     fontFamily: appStyle.fonts.bold.fontFamily,
   },
   progressSection: {
-    backgroundColor: 'rgba(255,255,255,0.1)',
+    backgroundColor: 'rgba(30, 30, 30, 0.4)',
     padding: 15,
-    borderRadius: 12,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(198, 40, 40, 0.2)',
+    marginTop: 10,
   },
   progressHeader: {
     flexDirection: 'row',
@@ -621,16 +625,14 @@ const styles = StyleSheet.create({
   quoteCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: appStyle.colors.surface,
+    backgroundColor: appStyle.colors.cardBackground,
     margin: 20,
     marginTop: -15,
     padding: 20,
-    borderRadius: 16,
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: appStyle.colors.cardBorder,
+    ...appStyle.shadows.medium,
     gap: 15,
   },
   quoteContent: {
@@ -644,7 +646,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   quoteAuthor: {
-    color: '#888',
+    color: appStyle.colors.textSecondary,
     fontSize: 12,
     fontFamily: appStyle.fonts.regular.fontFamily,
     fontStyle: 'italic',
@@ -678,15 +680,11 @@ const styles = StyleSheet.create({
   },
   streakCard: {
     flex: 1,
-    borderRadius: 16,
+    borderRadius: 20,
     padding: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+    ...appStyle.shadows.small,
   },
   streakValue: {
     color: appStyle.colors.text,
@@ -699,7 +697,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   streakLabel: {
-    color: '#888',
+    color: appStyle.colors.textSecondary,
     fontSize: 12,
     fontFamily: appStyle.fonts.regular.fontFamily,
   },
@@ -726,17 +724,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   statCard: {
-    backgroundColor: appStyle.colors.surface,
+    backgroundColor: appStyle.colors.cardBackground,
     padding: 15,
-    borderRadius: 12,
+    borderRadius: 16,
     width: '48%',
     marginBottom: 15,
     borderLeftWidth: 4,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    borderLeftColor: appStyle.colors.accent,
+    borderWidth: 1,
+    borderColor: appStyle.colors.cardBorder,
+    ...appStyle.shadows.small,
   },
   statValue: {
     color: appStyle.colors.text,
@@ -745,7 +742,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   statLabel: {
-    color: '#888',
+    color: appStyle.colors.textSecondary,
     fontSize: 12,
     fontFamily: appStyle.fonts.regular.fontFamily,
   },
@@ -754,15 +751,13 @@ const styles = StyleSheet.create({
   },
   quickAction: {
     flexDirection: 'row',
-    backgroundColor: appStyle.colors.surface,
+    backgroundColor: appStyle.colors.cardBackground,
     padding: 15,
-    borderRadius: 12,
+    borderRadius: 16,
     alignItems: 'center',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
+    borderWidth: 1,
+    borderColor: appStyle.colors.cardBorder,
+    ...appStyle.shadows.small,
   },
   quickActionGradient: {
     width: 50,
@@ -771,6 +766,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 15,
+    backgroundColor: appStyle.colors.accent,
   },
   quickActionText: {
     flex: 1,
@@ -782,21 +778,23 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   quickActionSubtitle: {
-    color: '#888',
+    color: appStyle.colors.textSecondary,
     fontSize: 12,
     fontFamily: appStyle.fonts.regular.fontFamily,
   },
   recentList: {
-    backgroundColor: appStyle.colors.surface,
-    borderRadius: 12,
+    backgroundColor: appStyle.colors.cardBackground,
+    borderRadius: 16,
     padding: 15,
+    borderWidth: 1,
+    borderColor: appStyle.colors.cardBorder,
   },
   recentItem: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#363636',
+    borderBottomColor: appStyle.colors.divider,
   },
   recentTextContainer: {
     flex: 1,
@@ -809,7 +807,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   recentDetails: {
-    color: '#888',
+    color: appStyle.colors.textSecondary,
     fontSize: 12,
     fontFamily: appStyle.fonts.regular.fontFamily,
   },

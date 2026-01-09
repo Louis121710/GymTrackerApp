@@ -6,8 +6,11 @@
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
     "splash": {
-      "backgroundColor": "#1C1C1C"
+      "backgroundColor": "#000000",
+      "image": "./assets/splash.png",
+      "resizeMode": "contain"
     },
+    "icon": "./assets/icon.png",
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -15,13 +18,18 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.louis121710.gymtracker",
+      "buildNumber": "1",
+      "infoPlist": {
+        "UIUserInterfaceStyle": "Dark"
+      }
     },
     "android": {
       "package": "com.louis121710.gymtracker",
       "versionCode": 1,
       "adaptiveIcon": {
-        "backgroundColor": "#1C1C1C"
+        "backgroundColor": "#000000"
       }
     },
     "web": {

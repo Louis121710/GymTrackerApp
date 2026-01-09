@@ -23,7 +23,19 @@ export const UserProfileProvider = ({ children }) => {
     height: '',
     age: '',
     goalWeight: '75',
-    goal: 'lose_weight'
+    goal: 'lose_weight',
+    bio: '',
+    website: '',
+    instagram: '',
+    twitter: '',
+    profileVisibility: 'public', // 'public' or 'private'
+    memberSince: null,
+    bodyFat: '',
+    chest: '',
+    waist: '',
+    hips: '',
+    biceps: '',
+    thighs: ''
   });
   const [loading, setLoading] = useState(true);
   
@@ -38,7 +50,19 @@ export const UserProfileProvider = ({ children }) => {
         height: '',
         age: '',
         goalWeight: '75',
-        goal: 'lose_weight'
+        goal: 'lose_weight',
+        bio: '',
+        website: '',
+        instagram: '',
+        twitter: '',
+        profileVisibility: 'public',
+        memberSince: null,
+        bodyFat: '',
+        chest: '',
+        waist: '',
+        hips: '',
+        biceps: '',
+        thighs: ''
       });
       setLoading(false);
       return;
@@ -56,7 +80,19 @@ export const UserProfileProvider = ({ children }) => {
             height: userData.height || '',
             age: userData.age || '',
             goalWeight: userData.goalWeight || '75',
-            goal: userData.goal || 'lose_weight'
+            goal: userData.goal || 'lose_weight',
+            bio: userData.bio || '',
+            website: userData.website || '',
+            instagram: userData.instagram || '',
+            twitter: userData.twitter || '',
+            profileVisibility: userData.profileVisibility || 'public',
+            memberSince: userData.memberSince || null,
+            bodyFat: userData.bodyFat || '',
+            chest: userData.chest || '',
+            waist: userData.waist || '',
+            hips: userData.hips || '',
+            biceps: userData.biceps || '',
+            thighs: userData.thighs || ''
           });
         } else {
           setProfile({
@@ -65,7 +101,19 @@ export const UserProfileProvider = ({ children }) => {
             height: '',
             age: '',
             goalWeight: '75',
-            goal: 'lose_weight'
+            goal: 'lose_weight',
+            bio: '',
+            website: '',
+            instagram: '',
+            twitter: '',
+            profileVisibility: 'public',
+            memberSince: null,
+            bodyFat: '',
+            chest: '',
+            waist: '',
+            hips: '',
+            biceps: '',
+            thighs: ''
           });
         }
       }

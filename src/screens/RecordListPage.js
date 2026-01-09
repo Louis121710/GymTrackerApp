@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, RefreshControl } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import appStyle from '../../appStyle';
 import { loadEntries, getCurrentUser, deleteEntry as deleteEntryStorage } from '../utils/storage';
 
@@ -79,7 +80,7 @@ const RecordListPage = () => {
             style={styles.editButton}
             onPress={() => Alert.alert('Edit', `Edit entry from ${item.date}`)}
           >
-            <MaterialCommunityIcons name="pencil" size={16} color="#4CAF50" />
+            <MaterialCommunityIcons name="pencil" size={16} color={appStyle.colors.primary} />
             <Text style={styles.actionText}>Edit</Text>
           </TouchableOpacity>
 
@@ -87,7 +88,7 @@ const RecordListPage = () => {
             style={styles.deleteButton}
             onPress={() => deleteEntry(item.id)}
           >
-            <MaterialCommunityIcons name="delete" size={16} color="#F44336" />
+            <MaterialCommunityIcons name="delete" size={16} color={appStyle.colors.primary} />
             <Text style={styles.actionText}>Delete</Text>
           </TouchableOpacity>
         </View>
@@ -164,15 +165,13 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   entryCard: {
-    backgroundColor: appStyle.colors.surface,
-    borderRadius: 12,
+    backgroundColor: appStyle.colors.cardBackground,
+    borderRadius: 16,
     padding: 15,
     marginBottom: 10,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
+    borderWidth: 1,
+    borderColor: appStyle.colors.cardBorder,
+    ...appStyle.shadows.small,
   },
   entryHeader: {
     flexDirection: 'row',
@@ -193,7 +192,7 @@ const styles = StyleSheet.create({
   typeIndicator: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#363636',
+    backgroundColor: appStyle.colors.surfaceElevated,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
@@ -229,7 +228,7 @@ const styles = StyleSheet.create({
   editButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2E7D32',
+    backgroundColor: appStyle.colors.primary,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
@@ -237,7 +236,7 @@ const styles = StyleSheet.create({
   deleteButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#C62828',
+    backgroundColor: appStyle.colors.primaryDark,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
@@ -252,7 +251,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingTop: 10,
     borderTopWidth: 1,
-    borderTopColor: '#363636',
+    borderTopColor: appStyle.colors.cardBorder,
   },
   notesLabel: {
     color: '#888',
