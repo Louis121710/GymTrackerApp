@@ -1,13 +1,15 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LoginPage from '../screens/LoginPage';
 import HomePage from '../screens/HomePage';
 import AddRecordPage from '../screens/AddRecordPage';
 import RecordListPage from '../screens/RecordListPage';
-import ChartPage from '../screens/ChartPage';
+import StatsPage from '../screens/StatsPage';
 import ProfilePage from '../screens/ProfilePage';
+import CustomWorkoutPage from '../screens/CustomWorkoutPage';
 import appStyle from '../../appStyle';
 import { useAuth } from '../context/AuthContext';
 
@@ -15,6 +17,7 @@ const Tab = createBottomTabNavigator();
 
 const MainTabs = () => {
   const { user, loading } = useAuth();
+  const insets = useSafeAreaInsets();
 
   if (loading) {
     return (
@@ -26,6 +29,9 @@ const MainTabs = () => {
 
   console.log('Rendering MainTabs - User:', user);
 
+  // Calculate safe bottom padding for navigation bar
+  const bottomPadding = Math.max(insets.bottom, Platform.OS === 'android' ? 8 : 0);
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -36,9 +42,11 @@ const MainTabs = () => {
             iconName = 'home';
           } else if (route.name === 'AddRecord') {
             iconName = 'plus-box';
+          } else if (route.name === 'CustomWorkout') {
+            iconName = 'dumbbell';
           } else if (route.name === 'Records') {
             iconName = 'format-list-bulleted';
-          } else if (route.name === 'Charts') {
+          } else if (route.name === 'Stats') {
             iconName = 'chart-line';
           } else if (route.name === 'Profile') {
             iconName = 'account';
@@ -48,11 +56,15 @@ const MainTabs = () => {
 
           return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: appStyle.colors.primary,
-        tabBarInactiveTintColor: appStyle.colors.text,
+        tabBarActiveTintColor: appStyle.colors.accent,
+        tabBarInactiveTintColor: appStyle.colors.textSecondary,
         tabBarStyle: {
-          backgroundColor: appStyle.colors.background,
-          borderTopColor: '#363636',
+          backgroundColor: appStyle.colors.surface,
+          borderTopColor: appStyle.colors.cardBorder,
+          borderTopWidth: 1,
+          height: 60 + bottomPadding,
+          paddingBottom: bottomPadding,
+          paddingTop: 8,
           display: user ? 'flex' : 'none',
         },
         headerShown: false,
@@ -62,9 +74,18 @@ const MainTabs = () => {
         // Authenticated user tabs
         <>
           <Tab.Screen name="Home" component={HomePage} />
-          <Tab.Screen name="AddRecord" component={AddRecordPage} />
+          <Tab.Screen 
+            name="AddRecord" 
+            component={AddRecordPage}
+            options={{ tabBarLabel: 'Records' }}
+          />
+          <Tab.Screen 
+            name="CustomWorkout" 
+            component={CustomWorkoutPage}
+            options={{ tabBarLabel: 'Workouts' }}
+          />
           <Tab.Screen name="Records" component={RecordListPage} />
-          <Tab.Screen name="Charts" component={ChartPage} />
+          <Tab.Screen name="Stats" component={StatsPage} />
           <Tab.Screen name="Profile" component={ProfilePage} />
         </>
       ) : (
