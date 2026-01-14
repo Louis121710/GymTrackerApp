@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Platform, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -10,16 +10,39 @@ import AddRecordPage from '../screens/AddRecordPage';
 import StatsPage from '../screens/StatsPage';
 import ProfilePage from '../screens/ProfilePage';
 import CustomWorkoutPage from '../screens/CustomWorkoutPage';
+import SetupPage from '../screens/SetupPage';
 import appStyle from '../../appStyle';
 import { useAuth } from '../context/AuthContext';
+import { useUserProfile } from '../context/UserProfileContext';
+import { isProfileComplete } from '../utils/storage';
 
 const Tab = createBottomTabNavigator();
 
 const MainTabs = () => {
   const { user, loading } = useAuth();
+  const { profile } = useUserProfile();
   const insets = useSafeAreaInsets();
+  const [profileComplete, setProfileComplete] = useState(false);
+  const [checkingProfile, setCheckingProfile] = useState(true);
 
-  if (loading) {
+  // Check if profile is complete when user logs in or profile changes
+  const checkProfileCompletion = async () => {
+    if (user) {
+      setCheckingProfile(true);
+      const complete = await isProfileComplete(user);
+      setProfileComplete(complete);
+      setCheckingProfile(false);
+    } else {
+      setProfileComplete(false);
+      setCheckingProfile(false);
+    }
+  };
+
+  useEffect(() => {
+    checkProfileCompletion();
+  }, [user, profile.height, profile.age, profile.goalWeight, profile.goal]);
+
+  if (loading || checkingProfile) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: appStyle.colors.background }}>
         <Text style={{ color: appStyle.colors.text }}>Loading...</Text>
@@ -91,6 +114,8 @@ const MainTabs = () => {
             iconName = 'account';
           } else if (route.name === 'Login') {
             iconName = 'login';
+          } else if (route.name === 'Setup') {
+            iconName = 'account-check';
           }
 
           const iconColor = isFocused ? '#FFFFFF' : appStyle.colors.textSecondary;
@@ -159,6 +184,8 @@ const MainTabs = () => {
             iconName = 'account';
           } else if (route.name === 'Login') {
             iconName = 'login';
+          } else if (route.name === 'Setup') {
+            iconName = 'account-check';
           }
 
           return null; // We'll handle icons in custom tab bar
@@ -175,25 +202,38 @@ const MainTabs = () => {
         },
         headerShown: false,
       })}
-      tabBar={(props) => (user ? <CustomTabBar {...props} /> : null)}
+      tabBar={(props) => (user && profileComplete ? <CustomTabBar {...props} /> : null)}
     >
       {user ? (
-        // Authenticated user tabs
-        <>
-          <Tab.Screen name="Home" component={HomePage} />
+        // Authenticated user - check if profile is complete
+        profileComplete ? (
+          // Profile complete - show main app tabs
+          <>
+            <Tab.Screen name="Home" component={HomePage} />
+            <Tab.Screen 
+              name="AddRecord" 
+              component={AddRecordPage}
+              options={{ tabBarLabel: 'Records' }}
+            />
+            <Tab.Screen 
+              name="CustomWorkout" 
+              component={CustomWorkoutPage}
+              options={{ tabBarLabel: 'Workouts' }}
+            />
+            <Tab.Screen name="Stats" component={StatsPage} />
+            <Tab.Screen name="Profile" component={ProfilePage} />
+          </>
+        ) : (
+          // Profile incomplete - show setup page (no tab bar)
           <Tab.Screen 
-            name="AddRecord" 
-            component={AddRecordPage}
-            options={{ tabBarLabel: 'Records' }}
+            name="Setup" 
+            component={SetupPage}
+            options={{ 
+              tabBarLabel: 'Setup',
+              tabBarStyle: { display: 'none' } // Hide tab bar on setup page
+            }}
           />
-          <Tab.Screen 
-            name="CustomWorkout" 
-            component={CustomWorkoutPage}
-            options={{ tabBarLabel: 'Workouts' }}
-          />
-          <Tab.Screen name="Stats" component={StatsPage} />
-          <Tab.Screen name="Profile" component={ProfilePage} />
-        </>
+        )
       ) : (
         // Not authenticated - only show login
         <Tab.Screen name="Login" component={LoginPage} />

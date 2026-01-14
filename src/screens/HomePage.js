@@ -72,7 +72,7 @@ const HomePage = () => {
             />
             <StreakCard
               streak={stats.totalWorkouts}
-              label="Total Workouts"
+              label="Total Records"
             />
           </View>
         </View>

@@ -151,6 +151,50 @@ export const saveUsers = async (users) => {
   }
 };
 
+/**
+ * Reset password for a user
+ * @param {string} username - Username of the account
+ * @param {string} email - Email associated with the account (for verification)
+ * @param {string} newPassword - New password to set
+ * @returns {Object} Result object with success boolean and message
+ */
+export const resetPassword = async (username, email, newPassword) => {
+  try {
+    if (!username || !newPassword) {
+      return { success: false, message: 'Username and new password are required' };
+    }
+
+    if (newPassword.length < 4) {
+      return { success: false, message: 'Password must be at least 4 characters long' };
+    }
+
+    const users = await loadUsers();
+    const user = users.find(u => u.username === username);
+
+    if (!user) {
+      return { success: false, message: 'User not found' };
+    }
+
+    // If email was provided during signup, verify it matches
+    if (user.email && user.email.trim() !== '') {
+      if (!email || email.toLowerCase() !== user.email.toLowerCase()) {
+        return { success: false, message: 'Email does not match the account' };
+      }
+    }
+
+    // Update the password
+    const updatedUsers = users.map(u =>
+      u.username === username ? { ...u, password: newPassword } : u
+    );
+
+    await saveUsers(updatedUsers);
+    return { success: true, message: 'Password reset successfully' };
+  } catch (e) {
+    console.error('Reset password error:', e);
+    return { success: false, message: 'Failed to reset password. Please try again.' };
+  }
+};
+
 export const saveCurrentUser = async (username) => {
   try {
     // Save username, or remove if empty/null
@@ -198,6 +242,35 @@ export const updateUserProfile = async (username, updates) => {
     }
   } catch (e) {
     console.error('Update user profile error:', e);
+  }
+};
+
+/**
+ * Check if a user's profile is complete (has all required fields)
+ * Required fields: height, age, goalWeight, goal
+ * 
+ * @param {string} username - Username to check
+ * @returns {boolean} True if profile is complete, false otherwise
+ */
+export const isProfileComplete = async (username) => {
+  try {
+    if (!username) return false;
+    
+    const users = await loadUsers();
+    const user = users.find(u => u.username === username);
+    
+    if (!user) return false;
+    
+    // Check if all required fields are filled
+    const hasHeight = user.height && user.height.trim() !== '';
+    const hasAge = user.age && user.age.trim() !== '';
+    const hasGoalWeight = user.goalWeight && user.goalWeight.trim() !== '';
+    const hasGoal = user.goal && user.goal.trim() !== '';
+    
+    return hasHeight && hasAge && hasGoalWeight && hasGoal;
+  } catch (e) {
+    console.error('Check profile complete error:', e);
+    return false;
   }
 };
 

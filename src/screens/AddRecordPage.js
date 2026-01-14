@@ -326,10 +326,7 @@ const AddRecordPage = () => {
               <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[
-                styles.saveButton,
-                !bodyWeight && styles.saveButtonDisabled
-              ]}
+              style={!bodyWeight ? styles.saveButtonDisabled : styles.saveButton}
               onPress={() => {
                 dismissKeyboard();
                 handleSave();
@@ -337,16 +334,24 @@ const AddRecordPage = () => {
               activeOpacity={0.8}
               disabled={!bodyWeight}
             >
-              <LinearGradient
-                colors={!bodyWeight ? ['#404040', '#404040'] : ['#FF3333', '#FF6B35', '#FF8C42']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.saveButtonGradient}
-              >
-                <Text style={styles.saveButtonText}>
-                  {bodyWeight ? 'Save Record' : 'Enter Weight'}
-                </Text>
-              </LinearGradient>
+              {!bodyWeight ? (
+                <View style={styles.saveButtonDisabledContainer}>
+                  <Text style={styles.saveButtonDisabledText}>
+                    Save Record
+                  </Text>
+                </View>
+              ) : (
+                <LinearGradient
+                  colors={appStyle.gradients.primary}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.saveButtonGradient}
+                >
+                  <Text style={styles.saveButtonText}>
+                    Save Record
+                  </Text>
+                </LinearGradient>
+              )}
             </TouchableOpacity>
           </View>
         </View>

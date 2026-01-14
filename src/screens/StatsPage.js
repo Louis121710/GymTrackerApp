@@ -167,13 +167,11 @@ const StatsPage = () => {
       };
     }
 
-    // Reverse the data to show newest first (left to right)
-    const reversedData = [...filteredData].reverse();
-
+    // Show data in chronological order (oldest to newest, left to right)
     return {
-      labels: (Array.isArray(reversedData) ? reversedData : []).map(entry => formatDateLabel(entry.timestamp, timeRange)),
+      labels: (Array.isArray(filteredData) ? filteredData : []).map(entry => formatDateLabel(entry.timestamp, timeRange)),
       datasets: [{
-        data: (Array.isArray(reversedData) ? reversedData : []).map(entry => entry.body_weight || 0),
+        data: (Array.isArray(filteredData) ? filteredData : []).map(entry => entry.body_weight || 0),
         color: () => '#FF6B35', // Orange accent from gradient
         strokeWidth: 3, // Premium line width
       }],
@@ -237,13 +235,11 @@ const StatsPage = () => {
       new Date(a).getTime() - new Date(b).getTime()
     );
 
-    // Reverse the data to show newest first (left to right)
-    const reversedDates = [...dates].reverse();
-
+    // Show data in chronological order (oldest to newest, left to right)
     return {
-      labels: (Array.isArray(reversedDates) ? reversedDates : []).map(date => formatDateLabel(new Date(date).getTime(), timeRange)),
+      labels: (Array.isArray(dates) ? dates : []).map(date => formatDateLabel(new Date(date).getTime(), timeRange)),
       datasets: [{
-        data: (Array.isArray(reversedDates) ? reversedDates : []).map(date => Math.round(dailyVolume[date])),
+        data: (Array.isArray(dates) ? dates : []).map(date => Math.round(dailyVolume[date])),
         color: () => '#FF6B35', // Orange accent from gradient
         strokeWidth: 3, // Premium line width
       }],

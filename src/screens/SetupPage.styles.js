@@ -4,8 +4,8 @@ import appStyle from '../../appStyle';
 const { width } = Dimensions.get('window');
 
 /**
- * Styles for LoginPage component
- * Extracted for better code organization and maintainability
+ * Styles for SetupPage component
+ * Onboarding form styles matching the app's design system
  */
 const styles = StyleSheet.create({
   container: {
@@ -65,13 +65,13 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     marginBottom: 16,
   },
-  authTitle: {
+  setupTitle: {
     ...appStyle.typography.h1,
     textAlign: 'center',
     marginBottom: 8,
     letterSpacing: 0.5,
   },
-  authSubtitle: {
+  setupSubtitle: {
     ...appStyle.typography.body,
     textAlign: 'center',
     color: appStyle.colors.textSecondary,
@@ -103,11 +103,64 @@ const styles = StyleSheet.create({
     paddingLeft: 0,
     ...appStyle.typography.body,
   },
-  authButton: {
+  goalSection: {
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  goalLabel: {
+    ...appStyle.typography.body,
+    color: appStyle.colors.text,
+    marginBottom: 12,
+    fontWeight: '600',
+  },
+  goalButtonsContainer: {
+    gap: 12,
+  },
+  goalButton: {
+    borderRadius: appStyle.roundness.medium,
+    borderWidth: 1,
+    borderColor: appStyle.colors.cardBorder,
+    overflow: 'hidden',
+    minHeight: 56,
+  },
+  goalButtonActive: {
+    borderColor: appStyle.colors.accent,
+    ...appStyle.shadows.accent,
+  },
+  goalButtonGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 18,
+    gap: 10,
+  },
+  goalButtonInactive: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 18,
+    gap: 10,
+  },
+  goalButtonText: {
+    ...appStyle.typography.body,
+    color: appStyle.colors.textSecondary,
+    fontWeight: '500',
+    textAlign: 'center',
+    includeFontPadding: false,
+  },
+  goalButtonTextActive: {
+    ...appStyle.typography.body,
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  completeButton: {
     borderRadius: appStyle.roundness.full,
     overflow: 'hidden',
-    marginBottom: 20,
+    marginBottom: 16,
     ...appStyle.shadows.accent,
+  },
+  completeButtonDisabled: {
+    opacity: 0.6,
   },
   buttonGradient: {
     flexDirection: 'row',
@@ -116,7 +169,7 @@ const styles = StyleSheet.create({
     padding: 20,
     minHeight: 56,
   },
-  authButtonText: {
+  completeButtonText: {
     color: appStyle.colors.text,
     fontSize: 18,
     fontWeight: '700',
@@ -126,74 +179,11 @@ const styles = StyleSheet.create({
   buttonIcon: {
     marginLeft: 4,
   },
-  switchButton: {
-    alignItems: 'center',
-    padding: 12,
-  },
-  switchText: {
-    ...appStyle.typography.body,
+  requiredNote: {
+    ...appStyle.typography.caption,
     textAlign: 'center',
     color: appStyle.colors.textSecondary,
-  },
-  switchTextAccent: {
-    color: appStyle.colors.accent,
-    fontWeight: '600',
-  },
-  forgotPasswordButton: {
-    alignItems: 'flex-end',
-    marginTop: -8,
-    marginBottom: 16,
-    padding: 8,
-  },
-  forgotPasswordText: {
-    ...appStyle.typography.caption,
-    color: appStyle.colors.accent,
-    fontWeight: '500',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    justifyContent: 'flex-end',
-  },
-  modalContent: {
-    backgroundColor: appStyle.colors.surface,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    maxHeight: '90%',
-    borderWidth: 1,
-    borderColor: appStyle.colors.cardBorder,
-    ...appStyle.shadows.large,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 24,
-    borderBottomWidth: 1,
-    borderBottomColor: appStyle.colors.cardBorder,
-  },
-  modalTitle: {
-    ...appStyle.typography.h2,
-    color: appStyle.colors.text,
-  },
-  closeButton: {
-    padding: 8,
-  },
-  modalBody: {
-    padding: 24,
-  },
-  modalSubtitle: {
-    ...appStyle.typography.body,
-    color: appStyle.colors.textSecondary,
-    marginBottom: 24,
-    lineHeight: 22,
-  },
-  resetButton: {
-    borderRadius: appStyle.roundness.full,
-    overflow: 'hidden',
     marginTop: 8,
-    marginBottom: 24,
-    ...appStyle.shadows.accent,
   },
 });
 

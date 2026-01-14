@@ -181,7 +181,7 @@ const CreateWorkoutView = ({
             </View>
           ) : (
           <LinearGradient
-              colors={['#FF3333', '#FF6B35', '#FF8C42']}
+              colors={appStyle.gradients.primary}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.saveButtonGradient}
@@ -338,11 +338,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     overflow: 'hidden',
     minHeight: 48,
-    shadowColor: '#FF3333',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
+    borderWidth: 0,
+    shadowColor: 'transparent',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0,
+    shadowRadius: 0,
+    elevation: 0,
   },
   saveButtonDisabled: {
     width: '100%',
