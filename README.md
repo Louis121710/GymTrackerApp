@@ -1,222 +1,92 @@
-# GymTrackerApp
+# Gym Tracker App
 
-Mobile fitness tracker built with Expo SDK 54 (React Native 0.81). Tracks workouts and weight per user, shows charts, and lets users manage their profile—all with local, per-user storage.
+A mobile fitness tracking app built with React Native and Expo. Track your workouts, monitor your weight progress, and stay motivated on your fitness journey.
 
-## Highlights
-- Add workouts with weight, cardio toggle, notes, and goal context.
-- History list with delete; screens refresh on focus so new entries appear immediately.
-- Progress charts (weight trend, workout frequency) scoped to the logged-in user.
-- Profile management with shared user profile context and goal weight surfaced in UI.
+## What It Does
 
-## Tech stack
-- Expo ~54.0.29, React Native 0.81, React 19
-- React Navigation (bottom tabs + stack)
-- AsyncStorage for per-user data/session
-- react-native-chart-kit for charts
-- Expo modules: font, linear-gradient, updates
+This app helps you:
+- **Track your weight** - Log your daily weight and see your progress over time
+- **Record workouts** - Save your workout sessions with exercises, sets, reps, and weights
+- **View statistics** - See charts and graphs of your progress, workout volume, and exercise trends
+- **Set goals** - Define your fitness goals and track how close you are to achieving them
+- **Build routines** - Create custom workout templates for different days of the week
+- **Track streaks** - See how consistent you've been with your fitness routine
 
-## Architecture at a glance
-- `App.js` — providers, navigation, theming.
-- `src/context/AuthContext.js` — session/user handling.
-- `src/context/UserProfileContext.js` — profile data shared across screens.
-- `src/utils/storage.js` — per-user AsyncStorage helpers (`gym_entries_<username>`, `current_user`).
-- Screens: `src/screens/*` (Home, AddRecord, Records, Charts, Profile, Setup).
-- Config: `app.json`, `appStyle.js`.
+## Features
 
-## Getting started
+### Home Dashboard
+- Daily motivational quotes
+- Quick stats overview (streaks, total records, longest streak)
+- Quick actions to add records or view stats
+
+### Records
+- Add weight entries with optional cardio tracking and notes
+- View your weight history in a clean list
+- Edit or delete previous entries
+- See progress towards your goal weight
+
+### Workouts
+- Create custom workout templates
+- Log completed workouts with all exercises, sets, and reps
+- View workout history
+- Track personal records for each exercise
+
+### Statistics
+- Weight progress charts over time
+- Workout volume progression
+- Exercise-specific charts (weight, reps, volume)
+- Personal records tracking
+
+### Profile
+- Set your fitness goals (lose weight, gain muscle, maintain)
+- View your stats and achievements
+- Calendar view showing when you logged workouts or weight
+- Customize your profile information
+
+## Tech Stack
+
+- **React Native** with Expo SDK 54
+- **React Navigation** for navigation
+- **AsyncStorage** for local data storage
+- **Firebase** for cloud sync (optional)
+- **react-native-chart-kit** for charts and graphs
+
+## Getting Started
+
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Start the development server: `npm start`
+4. Scan the QR code with Expo Go app or run on an emulator
+
+## Building the App
+
+To build an APK for Android:
 ```bash
-# From project root
-npm install
-
-# Start Metro/Expo (uses local Expo CLI)
-npm start
-# or with cache clear
-npx expo start --clear
+npm run build:apk
 ```
 
-### PowerShell execution policy (Windows)
-If scripts are blocked, set once for your user:
-```powershell
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+The app uses EAS Build for production builds. Make sure you have EAS CLI installed and configured.
+
+## Project Structure
+
+```
+src/
+  ├── screens/          # Main app screens
+  ├── components/       # Reusable components
+  ├── navigation/       # Navigation setup
+  ├── context/         # React context providers
+  ├── utils/           # Helper functions and storage
+  ├── hooks/           # Custom React hooks
+  └── constants/       # App constants and data
 ```
 
-### Staying compatible with Expo SDK 54
-Pinned versions:
-- expo ~54.0.29
-- expo-font ~14.0.10
-- expo-linear-gradient ~15.0.8
-- expo-updates ~29.0.15
-Reinstall if needed:
-```bash
-npm install expo@~54.0.29 expo-font@~14.0.10 expo-linear-gradient@~15.0.8 expo-updates@~29.0.15
-```
+## Notes
 
-## Data behavior
-- Entries are stored per username under `gym_entries_<username>` in AsyncStorage.
-- Current user is saved as `current_user`; empty/whitespace usernames are treated as unauthenticated.
-- Profile data loads from context first, then storage; `refreshProfile` updates all screens after edits.
+- Data is stored locally on your device using AsyncStorage
+- Firebase integration is optional for cloud sync
+- The app supports multiple user accounts with separate data storage
+- All data is stored per-user, so each account has its own workout history and progress
 
-## Firebase Cloud Storage (Optional)
+## License
 
-This app supports **cloud storage** using Firebase for automatic data sync across devices!
-
-### Quick Setup
-1. Create a Firebase project at [Firebase Console](https://console.firebase.google.com/)
-2. Enable Firestore Database
-3. Copy your Firebase config to `src/config/firebase.js`
-4. Your data will automatically sync!
-
-See [FIREBASE_SETUP.md](./FIREBASE_SETUP.md) for detailed instructions.
-
-### Features
-- **Hybrid Storage**: Local storage (fast, offline) + Cloud sync (backup, cross-device)
-- **Automatic Sync**: Background sync - no interruption
-- **Offline Support**: Works perfectly offline, syncs when online
-- **Backward Compatible**: Works with existing local data
-
-## Project scripts
-- `npm start` – start Expo dev server
-- `npm run android` – start with Android device/emulator
-- `npm run ios` – start with iOS simulator (macOS)
-- `npm run web` – start web
-
-## Building for iOS
-
-This project uses **Expo Application Services (EAS)** to build iOS apps.
-
-### Prerequisites
-- Node.js and npm installed
-- Expo account (free): https://expo.dev/signup
-- EAS CLI installed: `npm install -g eas-cli`
-- **macOS** (required for iOS builds and local development)
-- Xcode (for local iOS simulator testing)
-
-### Step-by-step iOS build process
-
-1. **Login to Expo** (one-time setup):
-   ```bash
-   npx eas-cli login
-   ```
-
-2. **Build the iOS app** (cloud build - recommended):
-   ```bash
-   npm run build:ios
-   ```
-   Or use the direct command:
-   ```bash
-   npx eas-cli build --platform ios --profile preview
-   ```
-
-3. **Wait for build to complete** (10-15 minutes):
-   - The build runs in the cloud on Expo's servers
-   - You'll see a progress indicator and a link to view build logs
-   - You can press `Ctrl+C` to exit - the build continues in the background
-
-4. **Download your app**:
-   - Once complete, you'll get a download URL
-   - For preview builds, you'll get an `.ipa` file
-   - Install via TestFlight or direct installation
-
-### iOS Development
-
-**For local iOS simulator (macOS only):**
-```bash
-npm run ios
-```
-
-This will:
-- Start the Expo dev server
-- Open iOS Simulator automatically
-- Load your app in the simulator
-
-**Requirements:**
-- macOS with Xcode installed
-- iOS Simulator available in Xcode
-
-### Build profiles
-
-- **Preview profile** (IPA): `npm run build:ios`
-  - Creates an `.ipa` file for testing
-  - Good for TestFlight distribution
-  
-- **Production profile** (App Store): `npm run build:ios:prod`
-  - Creates an `.ipa` file for App Store submission
-  - Required format for App Store releases
-
-### Important notes
-
-- **After making code changes**, you must rebuild to get a new IPA with your updates
-- iOS builds require an Apple Developer account ($99/year) for App Store distribution
-- Preview builds can be installed via TestFlight (requires Apple Developer account)
-- First build may take longer; subsequent builds are faster due to caching
-- Builds are tied to your Expo account - check https://expo.dev/accounts/[your-username]/projects/gym-tracker/builds for build history
-
-## Building Android APK
-
-This project uses **Expo Application Services (EAS)** to build installable Android APKs.
-
-### Prerequisites
-- Node.js and npm installed
-- Expo account (free): https://expo.dev/signup
-- EAS CLI installed: `npm install -g eas-cli`
-
-### Step-by-step build process
-
-1. **Login to Expo** (one-time setup):
-   ```bash
-   npx eas-cli login
-   ```
-
-2. **Build the APK** (cloud build - recommended):
-   ```bash
-   npm run build:apk
-   ```
-   Or use the direct command:
-   ```bash
-   npx eas-cli build --platform android --profile preview
-   ```
-
-3. **Wait for build to complete** (5-10 minutes):
-   - The build runs in the cloud on Expo's servers
-   - You'll see a progress indicator and a link to view build logs
-   - You can press `Ctrl+C` to exit - the build continues in the background
-
-4. **Download your APK**:
-   - Once complete, you'll get a download URL like: `https://expo.dev/artifacts/eas/...apk`
-   - Click the link or copy the URL to download
-   - Or download via PowerShell:
-     ```powershell
-     Invoke-WebRequest -Uri "YOUR_APK_URL" -OutFile "gym-tracker.apk"
-     ```
-
-### Build profiles
-
-- **Preview profile** (APK): `npm run build:apk`
-  - Creates an `.apk` file you can install directly on Android devices
-  - Good for testing and sharing with users
-  
-- **Production profile** (AAB): `npm run build:aab`
-  - Creates an `.aab` file for Google Play Store submission
-  - Required format for Play Store releases
-
-### Important notes
-
-- **After making code changes**, you must rebuild to get a new APK with your updates
-- The project includes `.npmrc` with `legacy-peer-deps=true` to handle dependency conflicts
-- Builds are tied to your Expo account - check https://expo.dev/accounts/[your-username]/projects/gym-tracker/builds for build history
-- First build may take longer; subsequent builds are faster due to caching
-
-### Troubleshooting builds
-
-- **Build fails during dependencies**: Ensure `.npmrc` exists with `legacy-peer-deps=true`
-- **Authentication errors**: Run `npx eas-cli login` again
-- **Network issues**: Check your internet connection; EAS builds require upload/download
-
-## Troubleshooting
-- **Expo fetch failed**: check network/VPN; retry `npm start`, or `npx expo start --offline` if offline.
-- **Execution policy**: see the PowerShell section above.
-- **New entries not visible**: screens reload on focus; ensure you are logged in so per-user storage resolves correctly.
-
-## Repo
-GitHub: https://github.com/Louis121710/GymTrackerApp
-
+This project is for personal use.
