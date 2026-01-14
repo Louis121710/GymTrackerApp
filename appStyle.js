@@ -4,79 +4,121 @@ const appStyle = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    // Primary colors - bold red and black theme
-    primary: '#DC2626', // Bold red (primary actions)
-    primaryDark: '#991B1B', // Darker red for depth
-    primaryLight: '#EF4444', // Lighter red for highlights
-    background: '#000000', // Pure black background
-    surface: '#0F0F0F', // Very dark gray surface
-    surfaceElevated: '#1A1A1A', // Elevated cards
-    text: '#FFFFFF', // Pure white text
-    textSecondary: '#B3B3B3', // Light gray text
-    accent: '#DC2626', // Red accent (matches primary)
-    accentLight: '#F87171', // Light red for subtle accents
-    error: '#DC2626', // Red error (matches theme)
-    success: '#22C55E', // Green success (for positive actions)
-    warning: '#F59E0B', // Amber warning
+    // Primary colors - Orange-to-Coral gradient theme (matching logo)
+    primary: '#FF3333', // Primary orange-red (exact logo color)
+    primaryDark: '#E55A2B', // Darker orange for depth
+    primaryLight: '#FF8C42', // Lighter orange for highlights
     
-    // Gradient colors - red to black
-    gradientStart: '#1A0000', // Dark red-black
-    gradientMid: '#0D0000', // Medium black-red
-    gradientEnd: '#000000', // Pure black
+    // Background colors - Slate palette
+    background: '#0F172A', // Slate-900 (main background)
+    surface: '#1E293B', // Slate-800 (cards)
+    surfaceElevated: '#334155', // Slate-700 (elevated surfaces)
+    
+    // Text colors
+    text: '#FFFFFF', // Pure white (headings)
+    textSecondary: '#94A3B8', // Slate-400 (secondary text)
+    textTertiary: '#64748B', // Slate-500 (muted text)
+    
+    // Accent colors
+    accent: '#FF6B35', // Orange-red accent (from logo gradient)
+    accentLight: '#FF8C42', // Light orange
+    accentDark: '#FF4D2D', // Darker orange
+    
+    // Status colors
+    error: '#EF4444', // Red error
+    success: '#4CAF50', // Green success
+    warning: '#FFA726', // Orange warning
+    info: '#3B82F6', // Blue info
+    
+    // Gradient colors - Orange-to-Coral (matching logo exactly)
+    gradientStart: '#FF3333', // Orange-red (start) - exact logo color
+    gradientMid: '#FF6B35', // Orange-red (middle)
+    gradientEnd: '#FF8C42', // Coral (end)
     
     // Card and component colors
-    cardBackground: '#0F0F0F', // Dark card background
-    cardBorder: '#1F1F1F', // Subtle red-tinted border
-    divider: '#1F1F1F',
+    cardBackground: '#1E293B', // Slate-800 (card background)
+    cardBorder: '#334155', // Slate-700 (subtle border)
+    divider: '#334155', // Slate-700
     
     // Interactive states
-    active: '#DC2626', // Red for active states
-    inactive: '#404040', // Gray for inactive
-    hover: '#2A2A2A', // Hover state
-    pressed: '#991B1B', // Pressed state (darker red)
+    active: '#FF6B35', // Orange for active states
+    inactive: '#475569', // Slate-600 for inactive
+    hover: '#334155', // Slate-700 hover state
+    pressed: '#FF4D2D', // Pressed state (darker orange)
   },
   gradients: {
-    primary: ['#1A0000', '#0D0000', '#000000'], // Red to black gradient
-    header: ['#2A0000', '#1A0000', '#000000'], // Header gradient
-    red: ['#DC2626', '#B91C1C', '#991B1B'], // Red gradient
-    dark: ['#000000', '#0A0A0A', '#141414'], // Dark gradient
-    accent: ['#DC2626', '#EF4444', '#F87171'], // Red accent gradient
-    card: ['#0F0F0F', '#141414'], // Card gradient
-    section: ['#0A0A0A', '#000000'], // Section background
+    primary: ['#FF3333', '#FF6B35', '#FF8C42'], // Orange-to-Coral (exact logo gradient)
+    header: ['#FF3333', '#FF6B35', '#FF8C42'], // Header gradient (matches logo exactly)
+    accent: ['#FF6B35', '#FF8C42'], // Orange accent gradient
+    dark: ['#0F172A', '#1E293B'], // Dark gradient
+    card: ['#1E293B', '#334155'], // Card gradient
+    section: ['#1E293B', '#0F172A'], // Section background
+    button: ['#FF3333', '#FF6B35'], // Button gradient
+    success: ['#4CAF50', '#66BB6A'], // Success gradient
   },
   fonts: {
     regular: {
-      fontFamily: 'Inter-Regular',
-      fontWeight: 'normal',
+      fontFamily: 'System',
+      fontWeight: '400',
     },
     bold: {
-      fontFamily: 'Inter-Bold',
-      fontWeight: 'bold',
+      fontFamily: 'System',
+      fontWeight: '700',
     },
   },
-  roundness: 16, // More rounded for modern look
+  roundness: {
+    small: 8,
+    medium: 12,
+    large: 16,
+    xl: 20,
+    full: 9999, // rounded-full
+  },
+  spacing: {
+    xs: 4,
+    sm: 8,
+    md: 16,
+    lg: 24,
+    xl: 32,
+    xxl: 48,
+  },
   shadows: {
     small: {
-      shadowColor: '#000',
+      shadowColor: '#000000',
       shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 5,
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 2,
     },
     medium: {
-      shadowColor: '#000',
+      shadowColor: '#000000',
       shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.3,
-      shadowRadius: 6,
-      elevation: 8,
+      shadowOpacity: 0.15,
+      shadowRadius: 8,
+      elevation: 4,
     },
     large: {
-      shadowColor: '#000',
+      shadowColor: '#000000',
       shadowOffset: { width: 0, height: 8 },
-      shadowOpacity: 0.35,
-      shadowRadius: 12,
-      elevation: 12,
+      shadowOpacity: 0.2,
+      shadowRadius: 16,
+      elevation: 8,
     },
+    accent: {
+      shadowColor: '#FF6B35',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+      shadowRadius: 12,
+      elevation: 6,
+    },
+  },
+  typography: {
+    h1: { fontSize: 28, fontWeight: '700', color: '#FFFFFF' },
+    h2: { fontSize: 24, fontWeight: '700', color: '#FFFFFF' },
+    h3: { fontSize: 20, fontWeight: '600', color: '#FFFFFF' },
+    body: { fontSize: 16, fontWeight: '400', color: '#94A3B8' },
+    bodyBold: { fontSize: 16, fontWeight: '600', color: '#FFFFFF' },
+    caption: { fontSize: 14, fontWeight: '400', color: '#94A3B8' },
+    small: { fontSize: 12, fontWeight: '400', color: '#64748B' },
   },
 };
 

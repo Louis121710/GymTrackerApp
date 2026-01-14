@@ -7,10 +7,10 @@
     "userInterfaceStyle": "dark",
     "splash": {
       "backgroundColor": "#000000",
-      "image": "./assets/splash.png",
+      "image": "./assets/logo.png",
       "resizeMode": "contain"
     },
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo.png",
     "updates": {
       "fallbackToCacheTimeout": 0
     },

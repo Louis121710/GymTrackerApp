@@ -5,6 +5,7 @@ import { ThemeProvider } from 'react-native-paper';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFonts, Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
+import './global.css';
 import MainTabs from './src/navigation/MainTabs';
 import appStyle from './appStyle';
 import { AuthProvider } from './src/context/AuthContext';

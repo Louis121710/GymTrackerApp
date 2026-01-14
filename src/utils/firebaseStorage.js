@@ -156,7 +156,8 @@ export const saveEntriesToFirebase = async (entries, userId = null) => {
     const entriesRef = await getUserCollectionRef('entries', userId);
     
     // Save each entry as a document
-    const promises = entries.map(async (entry) => {
+    const safeEntries = Array.isArray(entries) ? entries : [];
+    const promises = safeEntries.map(async (entry) => {
       const entryRef = doc(entriesRef, entry.id);
       const preparedEntry = prepareForFirestore(entry);
       await setDoc(entryRef, preparedEntry, { merge: true });
@@ -270,7 +271,8 @@ export const saveWorkoutLogsToFirebase = async (logs, userId = null) => {
 
     const logsRef = await getUserCollectionRef('workoutLogs', userId);
     
-    const promises = logs.map(async (log) => {
+    const safeLogs = Array.isArray(logs) ? logs : [];
+    const promises = safeLogs.map(async (log) => {
       const logRef = doc(logsRef, log.id);
       const preparedLog = prepareForFirestore(log);
       await setDoc(logRef, preparedLog, { merge: true });
@@ -419,9 +421,8 @@ export const savePersonalRecordsToFirebase = async (records, userId = null) => {
     }
 
     const userDocRef = await getUserDocRef(userId);
-    const prsRef = doc(userDocRef, 'personalRecords');
     
-    await setDoc(prsRef, { records }, { merge: true });
+    await setDoc(userDocRef, { personalRecords: records }, { merge: true });
     console.log('Personal records saved to Firebase');
     return true;
   } catch (error) {
@@ -444,12 +445,11 @@ export const loadPersonalRecordsFromFirebase = async (userId = null) => {
     }
 
     const userDocRef = await getUserDocRef(userId);
-    const prsRef = doc(userDocRef, 'personalRecords');
-    const docSnap = await getDoc(prsRef);
+    const docSnap = await getDoc(userDocRef);
     
     if (docSnap.exists()) {
       const data = docSnap.data();
-      return data.records || {};
+      return data.personalRecords || {};
     }
     return {};
   } catch (error) {
